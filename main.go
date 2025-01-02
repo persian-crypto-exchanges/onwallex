@@ -55,7 +55,10 @@ func main() {
 						message, err := getFormattedCryptoPrices()
 						if err != nil {
 							log.Printf("Error fetching crypto prices: %v", err)
-							client.SendMessage(update.Message.Chat.ID, "Error fetching crypto prices.")
+							sendErr := client.SendMessage(update.Message.Chat.ID, "Error fetching crypto prices.")
+							if sendErr != nil {
+								log.Printf("Error sending error message: %v", sendErr)
+							}
 						} else {
 							err = client.SendMessage(update.Message.Chat.ID, message)
 							if err != nil {
@@ -63,7 +66,6 @@ func main() {
 							}
 						}
 					}
-
 				}
 			}
 		}
