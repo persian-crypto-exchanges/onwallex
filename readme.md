@@ -22,7 +22,7 @@ Prerequisites
 5. Clone the repository:
 
 ```bash
-git clone https://github.com/your-repo/onwallex.git
+git clone https://github.com/shayan0v0n/onwallex.git
 cd onwallex
 ```
 
