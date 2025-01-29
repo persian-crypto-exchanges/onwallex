@@ -1,35 +1,21 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
 	"time"
 
 	"github.com/gravelstone/gravel"
-	"github.com/shayan0v0n/onwallex/internal/common"
 	"github.com/shayan0v0n/onwallex/internal/wallex"
-)
-
-const (
-	configFile = "config/wallex.conf"
 )
 
 func main() {
 	var channelID, t string
 	var timeInterval int
-	file, err := os.Open(configFile)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	channelID = common.Getenv("channelID", scanner)
-	t = common.Getenv("TELEGRAM_TOKEN", scanner)
-	timeInterval, err = strconv.Atoi(common.Getenv("timeInterval", scanner))
+	channelID = os.Getenv("channelID")
+	t = os.Getenv("TELEGRAM_TOKEN")
+	timeInterval, err := strconv.Atoi(os.Getenv("timeInterval"))
 	if err != nil {
 		log.Fatal(err)
 	}
