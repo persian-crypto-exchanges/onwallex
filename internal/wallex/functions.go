@@ -1,17 +1,9 @@
-package main
+package wallex
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"time"
-
-	"github.com/gravelstone/gravel"
-)
-
-const (
-	channelID = "@YOUR_CHANNEL"
 )
 
 type CryptoPrice struct {
@@ -19,60 +11,7 @@ type CryptoPrice struct {
 	IRRPrice string `json:"irr_price"`
 }
 
-func main() {
-	t := "TELEGRAM_TOKEN"
-	client := gravel.NewGravel(t, true)
-
-	ticker := time.NewTicker(1 * time.Hour)
-	defer ticker.Stop()
-
-	go func() {
-		for range ticker.C {
-			message, err := getFormattedCryptoPrices()
-			if err != nil {
-				log.Printf("Error fetching crypto prices: %v", err)
-				continue
-			}
-
-			err = client.SendMessageToChannel(channelID, message)
-			if err != nil {
-				log.Printf("Error sending hourly crypto prices: %v", err)
-			}
-		}
-	}()
-
-	for {
-		updates, err := client.GetUpdates()
-		if err != nil {
-			log.Printf("Error fetching updates: %v", err)
-			continue
-		}
-
-		for _, update := range updates {
-			if update.Message.IsCommand() {
-				if update.Message != nil {
-					if update.Message.Text == "/update" {
-						message, err := getFormattedCryptoPrices()
-						if err != nil {
-							log.Printf("Error fetching crypto prices: %v", err)
-							sendErr := client.SendMessage(update.Message.Chat.ID, "Error fetching crypto prices.")
-							if sendErr != nil {
-								log.Printf("Error sending error message: %v", sendErr)
-							}
-						} else {
-							err = client.SendMessage(update.Message.Chat.ID, message)
-							if err != nil {
-								log.Printf("Error while sending message: %v", err)
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func getFormattedCryptoPrices() (string, error) {
+func GetFormattedCryptoPrices() (string, error) {
 	cryptoPrices := map[string]string{
 		"Tether":   "https://api.wallex.ir/v1/market?pair=USDT/IRR",
 		"Bitcoin":  "https://api.wallex.ir/v1/market?pair=BTC/IRR",
